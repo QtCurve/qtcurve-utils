@@ -7,6 +7,16 @@
 #include <QtGui/QImage>
 #include <QtGui/QPainter>
 
+static QImage adjust(const QImage &src)
+{
+    QImage dest(src.size(), src.format());
+    dest.fill(Qt::transparent);
+    QPainter p(&dest);
+    p.drawImage(-1, 0, src);
+    p.end();
+    return dest;
+}
+
 static void fill(QImage &dest, const QImage &src)
 {
     dest.fill(Qt::transparent);
@@ -54,8 +64,8 @@ int main(int argc, char **argv)
     shadowImage.copy(_size, 0, _size, _size).save("shadow1.png");
     tmp=QImage(_size, _size, QImage::Format_ARGB32);
     fill(tmp, shadowImage.copy(_size-1, _size, _size, 1));
-    tmp.save("shadow2.png");
-    shadowImage.copy(_size-1, _size, _size, _size).save("shadow3.png");
+    adjust(tmp).save("shadow2.png");
+    adjust(shadowImage.copy(_size-1, _size, _size, _size)).save("shadow3.png");
     tmp=QImage(_size, _size, QImage::Format_ARGB32);
     fill(tmp, shadowImage.copy(_size-1, _size, 1, _size));
     tmp.save("shadow4.png");
